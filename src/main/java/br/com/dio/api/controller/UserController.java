@@ -16,6 +16,9 @@ import br.com.dio.api.model.User;
 
 import br.com.dio.api.service.UserService;
 
+/**
+ * Controller responsible for handling user-related operations.
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -23,12 +26,23 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    /**
+     * Retrieves a list of all users.
+     *
+     * @return A list of users or an empty response body if no users are found.
+     */
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {       
         List<User> users = service.all();
-        return ResponseEntity.ok().body(users);
+        return users.isEmpty() ? ResponseEntity.ok().body(users) : ResponseEntity.ok().body(users);
     }
 
+    /**
+     * Retrieves a user by its ID.
+     *
+     * @param id The ID of the user to retrieve.
+     * @return The user if found, or a 404 response with a message indicating that the user was not found.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable Long id) {
         Optional<User> userOptional = service.get(id);
@@ -38,12 +52,15 @@ public class UserController {
         return ResponseEntity.ok().body(userOptional.get()); // Retorna o usuário se encontrado
     }
 
+    /**
+     * Saves a new user.
+     *
+     * @param user The user to save.
+     * @return The saved user with a 201 status code.
+     */
     @PostMapping
     public ResponseEntity<User> save(@RequestBody User user){
         User savedUser = service.save(user);
         return ResponseEntity.status(201).body(savedUser);
     }
-
-
-
 }
